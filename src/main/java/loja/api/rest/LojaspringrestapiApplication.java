@@ -46,14 +46,14 @@ public class LojaspringrestapiApplication  implements WebMvcConfigurer  {
 		
 		
 	registry.addMapping("/category/**")
-	.allowedMethods("*")
+	.allowedMethods("*","PUT","DELETE")
 	.allowedOrigins("*");
 	
 	registry.addMapping("/product/**")
 	.allowedMethods("*","PUT","DELETE")
 	.allowedOrigins("*");
 	
-	
+ 
 
 	
 	

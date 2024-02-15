@@ -1,5 +1,5 @@
 package loja.api.rest.controller;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,18 +54,31 @@ public class ProductController {
 	}
 	
 	
-	@PutMapping(value = "/", produces = "application/json")
-	public ResponseEntity<Product> atualizar(@RequestBody Product product) {
+	 @PutMapping(value = "/{productId}", produces = "application/json")
+	    public ResponseEntity<Product> atualizar(@PathVariable Long productId, @RequestBody Product updatedProduct) {
+	        try {
+	            // Certifique-se de que o produto exista antes de atualizar
+	            Optional<Product> optionalExistingProduct = productRepository.findById(productId);
 
-	
+	            if (optionalExistingProduct.isPresent()) {
+	                // Recupere o produto existente usando findById
+	                Product existingProduct = optionalExistingProduct.get();
 
+	              
+	                // Salve as alterações no produto existente
+	                Product productUpdate = productRepository.save(existingProduct);
 
-		Product productSave = productRepository.save(product);
-
-		return new ResponseEntity<Product>(productSave, HttpStatus.OK);
-
-	}
-	
+	                return new ResponseEntity<>(productUpdate, HttpStatus.OK);
+	            } else {
+	                // Se o produto não for encontrado, retorne 404 Not Found
+	                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	            }
+	        } catch (Exception e) {
+	            // Em caso de erro interno, retorne 500 Internal Server Error
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	  
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Product> delete(@PathVariable("id") Long id) {
 	    productRepository.deleteById(id);
